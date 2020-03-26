@@ -640,7 +640,13 @@ MemRegion ReservedHeapSpace::region() const {
 ReservedCodeSpace::ReservedCodeSpace(size_t r_size,
                                      size_t rs_align,
                                      bool large) : ReservedSpace() {
+#ifdef __arm64__
+// TODO: Hack, etting this to false for now.  Since we're using zero variant (interpreted), this should be ok.
+//       cf: <rdar://problem/60930577> and related
+  initialize(r_size, rs_align, large, /*requested address*/ NULL, /*executable*/ false);
+#else
   initialize(r_size, rs_align, large, /*requested address*/ NULL, /*executable*/ true);
+#endif
   MemTracker::record_virtual_memory_type((address)base(), mtCode);
 }
 
