@@ -107,6 +107,7 @@ ifeq ($(call isTargetOs, macosx), true)
             missing-method-return-type, \
         LDFLAGS := $(LDFLAGS_JDKLIB) \
             -L$(SUPPORT_OUTPUTDIR)/modules_libs/java.base \
+            -Wl$(COMMA)-rpath$(COMMA)@loader_path/../Frameworks \
             $(call SET_SHARED_LIBRARY_ORIGIN), \
         LIBS := \
             -lobjc \

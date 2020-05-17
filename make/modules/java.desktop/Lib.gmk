@@ -91,6 +91,7 @@ ifeq ($(call isTargetOs, macosx), true)
       DISABLED_WARNINGS_clang := objc-method-access objc-root-class \
           deprecated-declarations format-nonliteral, \
       LDFLAGS := $(LDFLAGS_JDKLIB) \
+          -Wl$(COMMA)-rpath$(COMMA)@loader_path/../Frameworks \
           $(call SET_SHARED_LIBRARY_ORIGIN), \
       LIBS := \
           -framework Accelerate \
@@ -119,6 +120,7 @@ ifeq ($(call isTargetOs, macosx), true)
       DISABLED_WARNINGS_clang := deprecated-declarations, \
       LDFLAGS := $(LDFLAGS_JDKLIB) \
           -L$(SUPPORT_OUTPUTDIR)/modules_libs/java.desktop \
+          -Wl$(COMMA)-rpath$(COMMA)@loader_path/../Frameworks \
           $(call SET_SHARED_LIBRARY_ORIGIN), \
       LIBS := \
           -losxapp \

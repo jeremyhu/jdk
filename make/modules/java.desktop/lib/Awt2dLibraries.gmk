@@ -148,7 +148,8 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBAWT, \
         sign-compare format-nonliteral, \
     DISABLED_WARNINGS_microsoft := 4244 4267 4996, \
     LDFLAGS := $(LDFLAGS_JDKLIB) $(call SET_SHARED_LIBRARY_ORIGIN), \
-    LDFLAGS_macosx := -L$(INSTALL_LIBRARIES_HERE), \
+    LDFLAGS_macosx := -Wl$(COMMA)-rpath$(COMMA)@loader_path/../Frameworks \
+            -L$(INSTALL_LIBRARIES_HERE), \
     LDFLAGS_windows := -delayload:user32.dll -delayload:gdi32.dll \
         -delayload:shell32.dll -delayload:winmm.dll \
         -delayload:winspool.drv -delayload:imm32.dll \
@@ -716,6 +717,7 @@ ifeq ($(ENABLE_HEADLESS_ONLY), false)
         -framework Foundation \
         -framework Security \
         -framework Cocoa \
+        -Wl$(COMMA)-rpath$(COMMA)@loader_path/../Frameworks \
         -framework JavaNativeFoundation
   else ifeq ($(call isTargetOs, windows), true)
     LIBSPLASHSCREEN_LIBS += kernel32.lib user32.lib gdi32.lib delayimp.lib $(WIN_JAVA_LIB) jvm.lib
@@ -804,6 +806,7 @@ ifeq ($(call isTargetOs, macosx), true)
           pointer-arith, \
       LDFLAGS := $(LDFLAGS_JDKLIB) \
           $(call SET_SHARED_LIBRARY_ORIGIN) \
+          -Wl$(COMMA)-rpath$(COMMA)@loader_path/../Frameworks \
           -L$(INSTALL_LIBRARIES_HERE), \
       LIBS := -lawt -lmlib_image -losxapp -ljvm $(LIBM) \
           -framework Accelerate \
