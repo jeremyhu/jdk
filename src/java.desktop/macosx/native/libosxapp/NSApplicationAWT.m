@@ -91,22 +91,24 @@ AWT_ASSERT_APPKIT_THREAD;
 
     JNIEnv *env = [ThreadUtilities getJNIEnv];
 
-    SEL appearanceSel = @selector(setAppearance:); // macOS 10.14+
-    if ([self respondsToSelector:appearanceSel]) {
-        NSString *appearanceProp = [PropertiesUtilities
-                javaSystemPropertyForKey:@"apple.awt.application.appearance"
-                                 withEnv:env];
-        if (![@"system" isEqual:appearanceProp]) {
-            // by default use light mode, because dark mode is not supported yet
-            NSAppearance *appearance = [NSAppearance appearanceNamed:NSAppearanceNameAqua];
-            if (appearanceProp != nil) {
-                NSAppearance *requested = [NSAppearance appearanceNamed:appearanceProp];
-                if (requested != nil) {
-                    appearance = requested;
+    if (@available(macOS 11.0, *)) {} else {
+        SEL appearanceSel = @selector(setAppearance:); // macOS 10.14+
+        if ([self respondsToSelector:appearanceSel]) {
+            NSString *appearanceProp = [PropertiesUtilities
+                    javaSystemPropertyForKey:@"apple.awt.application.appearance"
+                                     withEnv:env];
+            if (![@"system" isEqual:appearanceProp]) {
+                // by default use light mode, because dark mode is not supported yet
+                NSAppearance *appearance = [NSAppearance appearanceNamed:NSAppearanceNameAqua];
+                if (appearanceProp != nil) {
+                    NSAppearance *requested = [NSAppearance appearanceNamed:appearanceProp];
+                    if (requested != nil) {
+                        appearance = requested;
+                    }
                 }
+                // [self setAppearance:appearance];
+                [self performSelector:appearanceSel withObject:appearance];
             }
-            // [self setAppearance:appearance];
-            [self performSelector:appearanceSel withObject:appearance];
         }
     }
 
